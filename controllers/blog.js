@@ -5,26 +5,21 @@ const fs = require('fs');
 const SECRET = process.env.SECRET_KEY;
 
 const createBlog = async (req, res) => {
-  console.log(req.file)
-  const { originalname, path } = req.file;
-  const parts = originalname.split('.');
-  const ext = parts[parts.length - 1];
-  const newPath = path + '.' + ext;
-  fs.renameSync(path, newPath);
 
-  const { token } = req.cookies;
-  jwt.verify(token, SECRET, {}, async (err, info) => {
-    if (err) throw err;
+  // const { token } = req.cookies;
+  // jwt.verify(token, SECRET, {}, async (err, info) => {
+  //   if (err) throw err;
     const { title, summary, content } = req.body;
+    const { filename } = req.file;
     const postDoc = await Post.create({
       title,
       summary,
       content,
-      cover: newPath,
-      author: info.id,
+      cover: filename,
+      // author: req.session.user.username,
     });
     res.json(postDoc);
-  });
+  // });
 
 }
 
@@ -38,9 +33,9 @@ const updateBlog = async (req, res) => {
     fs.renameSync(path, newPath);
   }
 
-  const { token } = req.cookies;
-  jwt.verify(token, SECRET, {}, async (err, info) => {
-    if (err) throw err;
+  // const { token } = req.cookies;
+  // jwt.verify(token, SECRET, {}, async (err, info) => {
+    // if (err) throw err;
     const { id, title, summary, content } = req.body;
     const postDoc = await Post.findById(id);
     const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
@@ -55,7 +50,7 @@ const updateBlog = async (req, res) => {
     });
 
     res.json(postDoc);
-  });
+  // });
 };
 
 const getBlog = async (req, res) => {

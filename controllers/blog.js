@@ -10,7 +10,7 @@ const createBlog = async (req, res) => {
   // jwt.verify(token, SECRET, {}, async (err, info) => {
   //   if (err) throw err;
     const { title, summary, content } = req.body;
-    const { filename } = req.file;
+    const filename =  req.file ? req.file.filename : "";
     const postDoc = await Post.create({
       title,
       summary,
